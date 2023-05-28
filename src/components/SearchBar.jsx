@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Results from "./Results";
+import { getRepos } from '../utilities/search-api'
 
 export default function () {
     const [searchInput, setSearchInput] = useState('');
@@ -9,22 +10,14 @@ export default function () {
         const newSearchInput = evt.target.value;
         setSearchInput(newSearchInput);
     }
-
-    const options = {
-        method: "GET",
-        headers: {
-            accept: "application/vnd.github+json",
-        },
-    }
+    
     async function handleClick() {
-        const queryString = `q=${searchInput}+in:name,description`;
         try {
-            const res = await fetch(`https://api.github.com/search/repositories?${queryString}`, options
-            ).then(res => res.json());
+            const res = await getRepos(searchInput)
             setRepos(res);
             setSearchInput('')
         } catch (err) {
-            console.log(err)
+            alert(err)
         }
     }
     return (
